@@ -19,10 +19,10 @@
 		<maven.deploy.skip>true</maven.deploy.skip>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 		<lombok.version>1.18.34</lombok.version>
-		<!-- stick with Java 11 for this starter (Boot 2.x / Wicket 9 / javax) -->
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 	</properties>
+
 
 	<dependencies>
 		<!-- Wicket + Spring Boot starter -->
