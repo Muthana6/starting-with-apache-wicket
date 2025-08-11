@@ -11,7 +11,6 @@ public abstract class BasePage extends WebPage {
 	
 	public BasePage(PageParameters params){
 		super(params);
-		Injector.get().inject(this);
 		initPage();
 	}
 	
