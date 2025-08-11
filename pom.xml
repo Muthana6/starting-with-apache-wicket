@@ -22,10 +22,13 @@
 
 
 	<dependencies>
+		<!-- Wicket + Spring Boot starter -->
 		<dependency>
 			<groupId>com.giffing.wicket.spring.boot.starter</groupId>
 			<artifactId>wicket-spring-boot-starter</artifactId>
 		</dependency>
+
+		<!-- Spring Boot -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-actuator</artifactId>
@@ -38,6 +41,62 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+		<!-- Wicket core modules (match Wicket 9.x) -->
+		<dependency>
+			<groupId>org.apache.wicket</groupId>
+			<artifactId>wicket-extensions</artifactId>
+			<version>${wicket.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.wicket</groupId>
+			<artifactId>wicket-bean-validation</artifactId>
+			<version>${wicket.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.wicket</groupId>
+			<artifactId>wicket-native-websocket-javax</artifactId>
+			<version>${wicket.version}</version>
+		</dependency>
+
+		<!-- WicketStuff (pin to same 9.x) -->
+		<dependency>
+			<groupId>org.wicketstuff</groupId>
+			<artifactId>wicketstuff-annotation</artifactId>
+			<version>${wicketstuff.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.wicketstuff</groupId>
+			<artifactId>wicketstuff-htmlcompressor</artifactId>
+			<version>${wicketstuff.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.wicketstuff</groupId>
+			<artifactId>wicketstuff-serializer-fast2</artifactId>
+			<version>${wicketstuff.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.wicketstuff</groupId>
+			<artifactId>wicketstuff-restannotations</artifactId>
+			<version>${wicketstuff.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.wicketstuff</groupId>
+			<artifactId>wicketstuff-restannotations-json</artifactId>
+			<version>${wicketstuff.version}</version>
+		</dependency>
+
+		<!-- WebJars helper (leave as you had it; version managed by parent/starter) -->
+		<dependency>
+			<groupId>de.agilecoders.wicket.webjars</groupId>
+			<artifactId>wicket-webjars</artifactId>
+		</dependency>
+
+		<!-- Your other libs -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
@@ -65,10 +124,16 @@
 			<version>1.66</version>
 		</dependency>
 		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15to18</artifactId>
+			<version>1.66</version>
+		</dependency>
+		<dependency>
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 			<version>2.3.0</version>
 		</dependency>
+
 		<dependency>
 			<groupId>com.google.zxing</groupId>
 			<artifactId>core</artifactId>
@@ -79,87 +144,29 @@
 			<artifactId>javase</artifactId>
 			<version>3.5.0</version>
 		</dependency>
-		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-jdk15to18</artifactId>
-			<version>1.66</version>
-		</dependency>
 
-		<dependency>
-			<groupId>org.wicketstuff</groupId>
-			<artifactId>wicketstuff-annotation</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.wicketstuff</groupId>
-			<artifactId>wicketstuff-htmlcompressor</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>com.yahoo.platform.yui</groupId>
 			<artifactId>yuicompressor</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-extensions</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-bean-validation</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.agilecoders.wicket.webjars</groupId>
-			<artifactId>wicket-webjars</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.wicketstuff</groupId>
-			<artifactId>wicketstuff-serializer-fast2</artifactId>
-		</dependency>
-		<!--<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>bootstrap</artifactId>
-			<version>3.4.1</version>
-		</dependency>-->
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>AdminLTE</artifactId>
-			<version>3.2.0</version>
-		</dependency>
-		<dependency>
-			<groupId>de.agilecoders.wicket</groupId>
-			<artifactId>jquery-selectors</artifactId>
-			<version>2.0.9</version>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.wicketstuff</groupId>
-			<artifactId>wicketstuff-restannotations</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.wicketstuff</groupId>
-			<artifactId>wicketstuff-restannotations-json</artifactId>
-		</dependency>
 
+		<!-- Lombok (JDK 21 compatible) -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<optional>true</optional>
+			<version>${lombok.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
-		<!-- Test dependencies -->
+		<!-- Tests -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-native-websocket-javax</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -228,25 +235,25 @@
 					<compilerArgument>-proc:none</compilerArgument>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.bsc.maven</groupId>
-				<artifactId>maven-processor-plugin</artifactId>
-				<version>${maven-processor-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>process</id>
-						<goals>
-							<goal>process</goal>
-						</goals>
-						<phase>generate-sources</phase>
-						<configuration>
+<!--			<plugin>-->
+<!--				<groupId>org.bsc.maven</groupId>-->
+<!--				<artifactId>maven-processor-plugin</artifactId>-->
+<!--				<version>${maven-processor-plugin.version}</version>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<id>process</id>-->
+<!--						<goals>-->
+<!--							<goal>process</goal>-->
+<!--						</goals>-->
+<!--						<phase>generate-sources</phase>-->
+<!--						<configuration>-->
 
-						</configuration>
-					</execution>
-				</executions>
-				<dependencies>
-				</dependencies>
-			</plugin>
+<!--						</configuration>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--				<dependencies>-->
+<!--				</dependencies>-->
+<!--			</plugin>-->
 			<!-- Assist eclipse in recognizing the classes generated -->
 			<!-- by jpa-modelgen (via maven-processor-plugin) as source files -->
 			<plugin>
@@ -270,22 +277,8 @@
 			<plugin>
 				<groupId>org.asciidoctor</groupId>
 				<artifactId>asciidoctor-maven-plugin</artifactId>
-				<version>1.5.2</version>
-				<executions>
-					<execution>
-						<id>output-html</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>process-asciidoc</goal>
-						</goals>
-						<configuration>
-							<sourceDirectory>src/main/doc</sourceDirectory>
-							<outputDirectory>target/docs</outputDirectory>
-							<backend>html</backend>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
+
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<executions>

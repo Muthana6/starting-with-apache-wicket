@@ -1,12 +1,76 @@
-/target/
-/.settings/
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**
+!**/src/test/**
+
+### STS ###
+.apt_generated
 .classpath
+.factorypath
 .project
+.settings
 .springBeans
-/src/main/resources/public/docs/
+.sts4-cache
 
 ### IntelliJ IDEA ###
 .idea
 *.iws
 *.iml
 *.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
+### VS Code ###
+.vscode/
+
+# Application proberties
+**/application*.properties
+
+
+# Chat gpt ignores for spring boot
+
+# === Java ===
+*.class
+*.jar
+*.war
+*.iml
+*.log
+*.tmp
+*.swp
+
+# === Build output ===
+/target/
+/out/
+
+# === IDE files ===
+.idea/
+*.iws
+*.ipr
+*.iml
+.vscode/
+
+# === OS-specific ===
+.DS_Store
+Thumbs.db
+
+# === Environment/config ===
+*.env*
+**/application*.properties
+**/application*.yml
+**/application*.yaml
+
+# === Secrets/sample config ===
+!**/application-sample.properties
+!**/application-sample.yml
+
+# === Misc ===
+*.bak
+*.old
+*.orig
