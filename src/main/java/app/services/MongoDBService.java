@@ -2,6 +2,7 @@ package app.services;
 
 import app.models.Todo;
 import app.repos.TodoRepository;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import javax.annotation.PostConstruct;
 public class MongoDBService {
 
     @Autowired
+    @Getter // Using Lombok's @Getter to generate a getter for the repository
     private TodoRepository repo;
 
     /**
