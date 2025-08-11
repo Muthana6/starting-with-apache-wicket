@@ -1,5 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
+	<!-- artifactId only is fine; groupId is inherited from the parent -->
 	<artifactId>wicket-spring-boot-starter-example</artifactId>
 
 	<parent>
@@ -9,17 +13,16 @@
 	</parent>
 
 	<name>Spring boot starter example</name>
-	<description>
-		An example project which uses the wicket-spring-boot-starter autoconfiguration project
-	</description>
+	<description>An example project which uses the wicket-spring-boot-starter autoconfiguration project</description>
 
 	<properties>
 		<maven.deploy.skip>true</maven.deploy.skip>
-		<maven-processor-plugin.version>2.2.4</maven-processor-plugin.version>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
+		<lombok.version>1.18.34</lombok.version>
+		<!-- stick with Java 11 for this starter (Boot 2.x / Wicket 9 / javax) -->
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
 	</properties>
-
-
 
 	<dependencies>
 		<!-- Wicket + Spring Boot starter -->
@@ -46,7 +49,7 @@
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
-		<!-- Wicket core modules (match Wicket 9.x) -->
+		<!-- Wicket core modules (versions come from parent via ${wicket.version}) -->
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket-extensions</artifactId>
@@ -63,7 +66,7 @@
 			<version>${wicket.version}</version>
 		</dependency>
 
-		<!-- WicketStuff (pin to same 9.x) -->
+		<!-- WicketStuff (pin to same 9.x via ${wicketstuff.version}) -->
 		<dependency>
 			<groupId>org.wicketstuff</groupId>
 			<artifactId>wicketstuff-annotation</artifactId>
@@ -90,7 +93,7 @@
 			<version>${wicketstuff.version}</version>
 		</dependency>
 
-		<!-- WebJars helper (leave as you had it; version managed by parent/starter) -->
+		<!-- WebJars helper -->
 		<dependency>
 			<groupId>de.agilecoders.wicket.webjars</groupId>
 			<artifactId>wicket-webjars</artifactId>
@@ -154,7 +157,7 @@
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
 
-		<!-- Lombok (JDK 21 compatible) -->
+		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -171,9 +174,6 @@
 	</dependencies>
 
 	<profiles>
-		<profile>
-			<id>release</id>
-		</profile>
 		<profile>
 			<id>development</id>
 			<activation>
@@ -199,88 +199,59 @@
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-actuator</artifactId>
 				</dependency>
-
 			</dependencies>
+		</profile>
+		<profile>
+			<id>release</id>
 		</profile>
 	</profiles>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<!-- copy non-.java files from src/main/java so Wicket markup is on classpath -->
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*</include>
+				</includes>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+		</resources>
+
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.3</version>
-				<executions>
-					<execution>
-						<phase>none</phase>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
+			<!-- Single compiler plugin; runs Lombok as an annotation processor -->
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.11.0</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<compilerArgument>-proc:none</compilerArgument>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
-<!--			<plugin>-->
-<!--				<groupId>org.bsc.maven</groupId>-->
-<!--				<artifactId>maven-processor-plugin</artifactId>-->
-<!--				<version>${maven-processor-plugin.version}</version>-->
-<!--				<executions>-->
-<!--					<execution>-->
-<!--						<id>process</id>-->
-<!--						<goals>-->
-<!--							<goal>process</goal>-->
-<!--						</goals>-->
-<!--						<phase>generate-sources</phase>-->
-<!--						<configuration>-->
 
-<!--						</configuration>-->
-<!--					</execution>-->
-<!--				</executions>-->
-<!--				<dependencies>-->
-<!--				</dependencies>-->
-<!--			</plugin>-->
-			<!-- Assist eclipse in recognizing the classes generated -->
-			<!-- by jpa-modelgen (via maven-processor-plugin) as source files -->
+			<!-- Optional: keep your copy-resources for docs; add a version to avoid warnings -->
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>add-source</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>target/generated-sources/apt</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.asciidoctor</groupId>
-				<artifactId>asciidoctor-maven-plugin</artifactId>
-			</plugin>
-
-			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.3.1</version>
 				<executions>
 					<execution>
 						<id>copy-asciidoc-resources</id>
@@ -300,80 +271,23 @@
 					</execution>
 				</executions>
 			</plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>11</source>
-                    <target>11</target>
-                </configuration>
-            </plugin>
-        </plugins>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-			<resource>
-				<directory>src/main/java</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-		</resources>
-		<pluginManagement>
-			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.asciidoctor
-										</groupId>
-										<artifactId>
-											asciidoctor-maven-plugin
-										</artifactId>
-										<versionRange>
-											[1.5.2,)
-										</versionRange>
-										<goals>
-											<goal>
-												process-asciidoc
-											</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.bsc.maven</groupId>
-										<artifactId>maven-processor-plugin</artifactId>
-										<versionRange>[${maven-processor-plugin.version},)</versionRange>
-										<goals>
-											<goal>process</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<execute />
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
 
+			<!-- Optional; add version to silence warning (or remove if unused) -->
+			<plugin>
+				<groupId>org.asciidoctor</groupId>
+				<artifactId>asciidoctor-maven-plugin</artifactId>
+				<version>2.2.4</version>
+			</plugin>
+
+			<!-- Don’t deploy from local builds -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>3.1.2</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
