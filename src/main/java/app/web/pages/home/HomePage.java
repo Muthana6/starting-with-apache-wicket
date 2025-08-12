@@ -2,7 +2,11 @@ package app.web.pages.home;
 import app.models.Todo;
 import app.services.MongoDBService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.PropertyModel;
@@ -25,6 +29,24 @@ public class HomePage extends BasePage {
     Label label = new Label("label", "Hello from Wicket and Spring Boot!" +
         " MongoDBService is injected: " + mongoDBService.getRepo().count());
     add(label);
+
+    Form<Void> form = new Form("form");
+    add(form);
+
+    AjaxLink<Void> btnAdd = new AjaxLink<>("addItemLink") {
+      @Override
+      public void onClick(AjaxRequestTarget ajaxRequestTarget) {
+
+      }
+    };
+    form.add(btnAdd); // Add an AjaxLink to the form for adding new items
+
+    WebMarkupContainer formNew = new WebMarkupContainer("formNew");
+    formNew.setOutputMarkupPlaceholderTag(true); // Enable this container to be updated via Ajax
+    formNew.setVisible(false); // Initially hide the form for adding new items
+    form.add(formNew); // Add the container to the form
+
+
 
     List<Todo> todos = mongoDBService.getAllItems(); // Fetch all items from the MongoDBService
 
