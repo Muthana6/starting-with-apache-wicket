@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @Slf4j // Using Lombok's @Slf4j to enable logging
@@ -43,5 +46,16 @@ public class MongoDBService {
     public void save(Todo todo) {
         log.info("Saving Todo: {}", todo);
         repo.save(todo); // Save the Todo instance to the MongoDB repository
+    }
+
+    /**
+     * Retrieves all Todo instances from the MongoDB repository.
+     *
+     * @return A list of all Todo instances.
+     */
+    public List<Todo> getAllItems() {
+        log.info("Fetching all Todos from the repository.");
+        return StreamSupport.stream(repo.findAll().spliterator(), false)
+                .collect(Collectors.toList()); // Convert the Iterable to a List
     }
 }
