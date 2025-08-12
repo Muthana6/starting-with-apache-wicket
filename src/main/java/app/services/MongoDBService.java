@@ -32,8 +32,8 @@ public class MongoDBService {
         // Populating the database with initial data
         for(int i = 0; i < 8; i++) {
             Todo todo = new Todo(); // Create a new Todo instance
-            todo.setTitle("Todo " + i);
-            todo.setBody("This is the body of Todo " + i);
+            todo.setTitle("Todo " + (i + 1));
+            todo.setBody("This is the body of Todo " + (i + 1));
             save(todo); // Save the Todo instance to the repository
         }
     }

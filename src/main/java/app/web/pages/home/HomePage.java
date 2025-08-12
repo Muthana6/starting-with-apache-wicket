@@ -3,6 +3,7 @@ import app.models.Todo;
 import app.services.MongoDBService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -10,6 +11,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.wicketstuff.annotation.mount.MountPath;
@@ -49,13 +51,31 @@ public class HomePage extends BasePage {
     formNew.setVisible(true);// Set the visibility of the formNew container to true so it is displayed initially
     form.add(formNew); // Add the container to the form
 
+    Todo todoItem = new Todo(); // Create a new  item to bind to the form fields
+    form.setDefaultModel(new CompoundPropertyModel<Object>(todoItem)); // Set the form's model to a CompoundPropertyModel that binds to the todoItem
+
     TextField<String> title = new TextField<>("title");
     TextField<String> body = new TextField<>("body");
     AjaxLink<Void> btnSave = new AjaxLink<>("save") {
       @Override
-      public void onClick(AjaxRequestTarget ajaxRequestTarget) {
+      public void onClick(AjaxRequestTarget target) {
+
+        // Create a new  instance and set its properties from the form fields
+        Todo todo = new Todo();
+        todo.setTitle(title.getValue()); // Get the title from the form field
+        todo.setBody(body.getValue()); // Get the body from the form field
+        mongoDBService.save(todo); // Save the new item using the MongoDBService
+
+        // Clear the form fields after saving
+        todoItem.setTitle("");
+        todoItem.setBody("");
+
+        formNew.setVisible(false); // Hide the formNew container after saving
+        target.add(formNew); // Update the formNew container in the Ajax request
       }
     };
+
+    btnSave.add(new AjaxFormSubmitBehavior(form,"click") {}); // Add an AjaxFormSubmitBehavior to the save button to handle form submission
 
     formNew.add(title, body, btnSave); // Add text fields for title and body to the formNew container
 
