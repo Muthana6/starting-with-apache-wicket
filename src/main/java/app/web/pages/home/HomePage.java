@@ -7,6 +7,7 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.PropertyModel;
@@ -33,19 +34,30 @@ public class HomePage extends BasePage {
     Form<Void> form = new Form("form");
     add(form);
 
+    WebMarkupContainer formNew = new WebMarkupContainer("formNew");
+
     AjaxLink<Void> btnAdd = new AjaxLink<>("addItemLink") {
       @Override
-      public void onClick(AjaxRequestTarget ajaxRequestTarget) {
-
+      public void onClick(AjaxRequestTarget target) {
+        formNew.setVisible(!formNew.isVisible()); // Toggle visibility of the formNew container
+        target.add(formNew);
       }
     };
     form.add(btnAdd); // Add an AjaxLink to the form for adding new items
 
-    WebMarkupContainer formNew = new WebMarkupContainer("formNew");
     formNew.setOutputMarkupPlaceholderTag(true); // Enable this container to be updated via Ajax
-    formNew.setVisible(false); // Initially hide the form for adding new items
+    formNew.setVisible(true);// Set the visibility of the formNew container to true so it is displayed initially
     form.add(formNew); // Add the container to the form
 
+    TextField<String> title = new TextField<>("title");
+    TextField<String> body = new TextField<>("body");
+    AjaxLink<Void> btnSave = new AjaxLink<>("save") {
+      @Override
+      public void onClick(AjaxRequestTarget ajaxRequestTarget) {
+      }
+    };
+
+    formNew.add(title, body, btnSave); // Add text fields for title and body to the formNew container
 
 
     List<Todo> todos = mongoDBService.getAllItems(); // Fetch all items from the MongoDBService
