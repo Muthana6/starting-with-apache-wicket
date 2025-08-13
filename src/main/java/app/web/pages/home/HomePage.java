@@ -22,6 +22,7 @@ import com.giffing.wicket.spring.boot.context.scan.WicketHomePage;
 import app.web.pages.BasePage;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @WicketHomePage
@@ -60,7 +61,25 @@ public class HomePage extends BasePage {
         target.add(formNew);
       }
     };
-    form.add(btnAdd); // Add an AjaxLink to the form for adding new items
+    AjaxLink<Void> btnRemove = new AjaxLink<>("remove") {
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        List<Todo> todosToRemove = todos.stream()
+                .filter(Todo::isSelected) // Filter the list to get only selected items
+                .collect(Collectors.toList());  // Collect the selected items into a new list
+        mongoDBService.removeItems(todosToRemove); // Remove the selected items using the MongoDBService
+        todos.clear(); // Clear the current list of items
+        todos.addAll(mongoDBService.getAllItems()); // Fetch the updated list of items from the MongoDBService
+
+
+        showInfo(target, "Selected Items(" + todosToRemove.size() + ") removed"); // Show a message when the remove button is clicked
+
+        target.add(sectionForm); // Update the formNew container in the Ajax request
+      }
+    };
+    btnRemove.add(new AjaxFormSubmitBehavior(form,"click") {}); // Add an AjaxFormSubmitBehavior to the remove button to handle form submission
+
+    form.add(btnRemove, btnAdd); // Add the remove and add buttons to the form
 
     formNew.setOutputMarkupPlaceholderTag(true); // Enable this container to be updated via Ajax
     formNew.setVisible(true);// Set the visibility of the formNew container to true so it is displayed initially
@@ -71,6 +90,7 @@ public class HomePage extends BasePage {
 
     TextField<String> title = new TextField<>("title");
     TextField<String> body = new TextField<>("body");
+
     AjaxLink<Void> btnSave = new AjaxLink<>("save") {
       @Override
       public void onClick(AjaxRequestTarget target) {
@@ -94,7 +114,6 @@ public class HomePage extends BasePage {
         target.add(sectionForm); // Update the formNew container in the Ajax request
       }
     };
-
     btnSave.add(new AjaxFormSubmitBehavior(form,"click") {}); // Add an AjaxFormSubmitBehavior to the save button to handle form submission
 
     formNew.add(title, body, btnSave); // Add text fields for title and body to the formNew container

@@ -58,4 +58,8 @@ public class MongoDBService {
         return StreamSupport.stream(repo.findAll().spliterator(), false)
                 .collect(Collectors.toList()); // Convert the Iterable to a List
     }
+
+    public void removeItems(List<Todo> todosToRemove) {
+        repo.deleteAll(todosToRemove); // Delete the specified instances from the repository
+    }
 }
