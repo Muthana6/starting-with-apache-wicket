@@ -11,6 +11,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -28,13 +29,23 @@ public class HomePage extends BasePage {
   @SpringBean
   private MongoDBService mongoDBService;
 
+  FeedbackPanel fb; // FeedbackPanel to display messages to the user
+
   public HomePage() {
     Label label = new Label("label", "Hello from Wicket and Spring Boot!" +
         " MongoDBService is injected: " + mongoDBService.getRepo().count());
     add(label);
 
+    fb = new FeedbackPanel("feedbackPanel");
+    fb.setOutputMarkupPlaceholderTag(true); // Enable this panel to be updated via Ajax
+    add(fb); // Add the FeedbackPanel to the page to display messages
+
+    WebMarkupContainer sectionForm = new WebMarkupContainer("sectionForm");
+    sectionForm.setOutputMarkupId(true) ; // Enable this container to be updated via Ajax
+    add(sectionForm); // Add a WebMarkupContainer to the page to hold the form
+
     Form<Void> form = new Form("form");
-    add(form);
+    sectionForm.add(form);
 
     WebMarkupContainer formNew = new WebMarkupContainer("formNew");
 
@@ -71,7 +82,9 @@ public class HomePage extends BasePage {
         todoItem.setBody("");
 
         formNew.setVisible(false); // Hide the formNew container after saving
-        target.add(formNew); // Update the formNew container in the Ajax request
+
+        showInfo(target, "Item saved successfully!"); // Show a success message in the FeedbackPanel
+        target.add(sectionForm); // Update the formNew container in the Ajax request
       }
     };
 
@@ -103,7 +116,19 @@ public class HomePage extends BasePage {
         ));
       }
     };
-    add(todosList);
+    form.add(todosList);
+  }
+
+  /**
+   * This method is used to display an informational message in the FeedbackPanel.
+   * It updates the FeedbackPanel with the provided message and adds it to the Ajax request target.
+   *
+   * @param target The AjaxRequestTarget used to update the FeedbackPanel
+   * @param msg The message to be displayed in the FeedbackPanel
+   */
+  private void showInfo(AjaxRequestTarget target, String msg) {
+    info(msg); // Display an informational message in the FeedbackPanel
+    target.add(fb); // Add the FeedbackPanel to the Ajax request target to update it
   }
 
 }
