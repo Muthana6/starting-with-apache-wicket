@@ -2,6 +2,7 @@ package app.models;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -16,4 +17,7 @@ public class Todo {
     private String body;
     private LocalDateTime createdAt = LocalDateTime.now();
     private boolean closed = false;
+
+    @Transient // This field is not persisted in the database
+    private boolean selected ;
 }

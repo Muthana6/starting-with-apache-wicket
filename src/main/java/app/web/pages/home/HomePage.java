@@ -2,11 +2,13 @@ package app.web.pages.home;
 import app.models.Todo;
 import app.services.MongoDBService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -28,6 +30,8 @@ import java.util.List;
 public class HomePage extends BasePage {
   @SpringBean
   private MongoDBService mongoDBService;
+
+  List<Todo> todos;
 
   FeedbackPanel fb; // FeedbackPanel to display messages to the user
 
@@ -83,6 +87,9 @@ public class HomePage extends BasePage {
 
         formNew.setVisible(false); // Hide the formNew container after saving
 
+        todos.clear(); // Clear the current list of items
+        todos.addAll(mongoDBService.getAllItems()); // Fetch the updated list of items from the MongoDBService
+
         showInfo(target, "Item saved successfully!"); // Show a success message in the FeedbackPanel
         target.add(sectionForm); // Update the formNew container in the Ajax request
       }
@@ -93,7 +100,7 @@ public class HomePage extends BasePage {
     formNew.add(title, body, btnSave); // Add text fields for title and body to the formNew container
 
 
-    List<Todo> todos = mongoDBService.getAllItems(); // Fetch all items from the MongoDBService
+    todos = mongoDBService.getAllItems(); // Fetch all items from the MongoDBService
 
     // Create a ListView to display the list of items
     ListView<Todo> todosList = new ListView<>("todosList", todos) {
@@ -101,21 +108,42 @@ public class HomePage extends BasePage {
       // This method is called for each item in the list to populate the ListItem
       @Override
       protected void populateItem(ListItem<Todo> item) {
+
+        /*
         // Add a Label component to display the 'title' property of the current item
         // PropertyModel binds the label to the 'title' property of the object in this list item
+        */
         item.add(new Label(
                 "title",
                 new PropertyModel<String>(item.getModel(), "title")
         ));
 
-        // Add another Label component to display the 'body' property of the current item
+        /*
+         // Add another Label component to display the 'body' property of the current item
         // Using a lambda expression to bind the label to the 'body' property of the object in this list item
+        */
         item.add(new Label(
                 "body",
                 () -> item.getModelObject().getBody()
         ));
+
+        // Add a CheckBox component to allow the user to mark the item as selected
+        item.add(new CheckBox(
+                "selected",
+                new PropertyModel<>(item.getModel(), "selected")
+        ));
       }
     };
+
+    /*
+     * Keep the same ListItem component objects in memory between renders.
+     * Update their models with new data from the list model.
+     * Avoid rebuilding the HTML component hierarchy from scratch each time,
+     * which improves performance and preserves component state.
+     */
+    todosList.setReuseItems(true); // Enable item reuse for better performance
+
+
     form.add(todosList);
   }
 
